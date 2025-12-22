@@ -13,10 +13,8 @@
     color-scheme: light dark;
     background-color: #fff;
     color: #161616;
-  }
 
-  @media (prefers-color-scheme: dark) {
-    html {
+    @media (prefers-color-scheme: dark) {
       background-color: #000;
       color: #fff;
     }
@@ -25,8 +23,7 @@
   article {
     outline: none;
     margin: 0 auto;
-    padding-block: 18px;
-    padding-inline: max(18px, calc(50vw - 400px));
+    padding: 18px max(18px, calc(50vw - 400px));
     width: 100%;
     min-height: 100vh;
     font: 18px / 1.5 system-ui;
@@ -90,7 +87,7 @@
     writer.write(byteArray)
     writer.close()
     const buffer = await new Response(stream.readable).arrayBuffer()
-    return (new Uint8Array(buffer).toBase64()).replace(/\+/g, "-").replace(/\//g, "_")
+    return new Uint8Array(buffer).toBase64().replace(/\+/g, "-").replace(/\//g, "_")
   }
 
   async function decompress(b64) {
@@ -105,6 +102,9 @@
 
   function debounce(ms, fn) {
     let timer
-    return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), ms) }
+    return (...args) => {
+      clearTimeout(timer)
+      timer = setTimeout(() => fn(...args), ms)
+    }
   }
 </script>
