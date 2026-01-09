@@ -1,24 +1,28 @@
-name: deploy
-
+name: Deploy to Cloudflare Pages
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   workflow_dispatch:
-
+concurrency:
+  group: environment-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  PROJECT_NAME: textarea
+  BUILD_DIR: .
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       deployments: write
+    name: Deploy to Cloudflare Pages
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Deploy
+        uses: actions/checkout@v6
+      # ---------- publish ----------
+      - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy . --project-name=textarea-my --branch=main
+          command: pages deploy ${{ env.BUILD_DIR }} --project-name=${{ env.PROJECT_NAME }}
